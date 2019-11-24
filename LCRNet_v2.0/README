@@ -1,0 +1,49 @@
+# LCR-Net release v2.0
+
+This contains the code based on pytorch deep learning framework  for testing our model proposed in the CVPR'17 paper:
+LCR-Net: Localization-Classification-Regression for Human Pose.
+We only provide code for testing our models, not for training.
+The code has been tested on Linux with Cuda 9.x and Cudnn 7.x. We do not provide support for other OS or configuration.
+Please note that our code is released only for scientific or personal use under the GNU General Public License.
+
+### Preparation
+
+* Download and install Detectron.pytorch: https://github.com/roytseng-tw/Detectron.pytorch (we do not provide support for its installation)
+* Create a symbolic link in this folder to Detectron.pytorch
+
+### Usage 
+
+To use our code on an image, use the following command:
+
+python demo.py <modelname> <imagename> <gpuid>
+
+* <modelname>: name of model to use (see our website for the list of available models)
+* <imagename>: name of the image to test
+* <gpuid>: gpu id to use (-1 for cpu)
+
+### History
+
+* September 2018 (release v2.0)
+  * test code in pytorch with ResNet backbone
+* August 2018 (release v1.1)
+  * bug fix in lcr_net_ppi
+  * show the 3d scene instead of individual 3d pose
+* March 2018: release of new models trained on additional synthetic data
+* July 2017   (release v1.0)
+
+### Citation
+
+@inproceedings{rogez2017lcr,
+  title={{LCR-Net: Localization-Classification-Regression for Human Pose}},
+  author={Rogez, Gregory and Weinzaepfel, Philippe and Schmid, Cordelia},
+  booktitle={CVPR},
+  year={2017}
+}
+
+@article{rogez2019lcr,
+  TITLE = {{LCR-Net++: Multi-person 2D and 3D Pose Detection in Natural Images}},
+  AUTHOR = {Rogez, Gr\'egory and Weinzaepfel, Philippe and Schmid, Cordelia},
+  journal={IEEE transactions on pattern analysis and machine intelligence},
+  year={2019},
+  publisher={IEEE}
+}
