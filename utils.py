@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.optimize
 
 
 def cam2pixel(cam_coord, f, c):
@@ -10,11 +11,19 @@ def cam2pixel(cam_coord, f, c):
 
 
 def get_boxes(keypoints):
-    boxes = {}
-    for kps in keypoints:
-        xmin, xmax = np.min(kps[:, 0]), np.max(kps[:, 0])
-        ymin, ymax = np.min(kps[:, 1]), np.max(kps[:, 1])
-        boxes[tuple((xmin, ymin, xmax, ymax))] = kps
+    if type(keypoints) == dict:
+        boxes = {}
+        for bodyid, kps in keypoints.items():
+            xmin, xmax = np.min(kps[:, 0]), np.max(kps[:, 0])
+            ymin, ymax = np.min(kps[:, 1]), np.max(kps[:, 1])
+            boxes[tuple((xmin, ymin, xmax, ymax))] = (kps, bodyid)
+    else:
+        boxes = {}
+        for kps in keypoints:
+            xmin, xmax = np.min(kps[:, 0]), np.max(kps[:, 0])
+            ymin, ymax = np.min(kps[:, 1]), np.max(kps[:, 1])
+            boxes[tuple((xmin, ymin, xmax, ymax))] = kps
+
     return boxes
 
 
@@ -88,11 +97,44 @@ def match_to_eval(gt_boxes, pred_boxes, iou_thresh, dataset):
     tp = 0
     errors = []
     used_pred_box = set()
+    pred_body_id = {}
     for gt_b in gt_boxes.keys():
         for pred_b in pred_boxes.keys():
             if tuple(pred_b) not in used_pred_box and calc_IoU(gt_b, pred_b) >= iou_thresh:
                 tp += 1
                 used_pred_box.add(tuple(pred_b))
-                errors.append(calc_error(pred_boxes[pred_b], gt_boxes[gt_b], dataset))
+                errors.append(calc_error(pred_boxes[pred_b], gt_boxes[gt_b][0], dataset))
+                pred_body_id[gt_boxes[gt_b][1]] = pred_boxes[pred_b]
                 break
-    return tp, pred_num, gt_num, sum(errors)/len(errors) if errors else 0
+    return tp, pred_num, gt_num, sum(errors)/len(errors) if errors else 0, pred_body_id
+
+
+def _singularize(F):
+    U, S, V = np.linalg.svd(F)
+    S[-1] = 0
+    F = U.dot(np.diag(S).dot(V))
+    return F
+
+
+def _objective_F(f, pts1, pts2):
+    F = _singularize(f.reshape([3, 3]))
+    num_points = pts1.shape[0]
+    hpts1 = np.concatenate([pts1, np.ones([num_points, 1])], axis=1)
+    hpts2 = np.concatenate([pts2, np.ones([num_points, 1])], axis=1)
+    Fp1 = F.dot(hpts1.T)
+    FTp2 = F.T.dot(hpts2.T)
+
+    r = 0
+    for fp1, fp2, hp2 in zip(Fp1.T, FTp2.T, hpts2):
+        r += (hp2.dot(fp1))**2 * (1/(fp1[0]**2 + fp1[1]**2) + 1/(fp2[0]**2 + fp2[1]**2))
+    return r
+
+
+def refineF(F, pts1, pts2):
+    f = scipy.optimize.fmin_powell(
+        lambda x: _objective_F(x, pts1, pts2), F.reshape([-1]),
+        maxiter=10000,
+        maxfun=10000,
+        disp=False
+    )
+    return _singularize(f.reshape([3, 3]))

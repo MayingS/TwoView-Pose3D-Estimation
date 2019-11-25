@@ -4,6 +4,7 @@ import matplotlib.pylab as plt
 from mpl_toolkits.mplot3d import Axes3D
 plt.ion()
 
+
 def display_2d_poses(image, detections, njts, imagename, savedir):
     if njts==13:
       left  = [(9,11),(7,9),(1,3),(3,5)] # bones on the left
@@ -43,3 +44,34 @@ def display_2d_poses(image, detections, njts, imagename, savedir):
         os.makedirs(path_2d)
     outimage_2d_path = os.path.join(path_2d, imagename)
     plt.savefig(outimage_2d_path)
+
+
+# [pelvis, left_hip, left_knee, left_ankle, right_hip, right_knee, right_ankle, middle_back,
+#  neck, nose, head, right_shoulder, right_elbow, right_wrist, left_shoulder, left_elbow, left_wrist]
+connection = [[0, 1], [1, 2], [2, 3], [0, 4], [4, 5], [5, 6], [0, 7], [7, 8], [8, 9], [9, 10],
+              [8, 11], [11, 12], [12, 13], [8, 14], [14, 15], [15, 16]]
+
+
+def plot_3D_keypoints_cmp(keypoints1, keypoints2):
+    fig = plt.figure(1)
+    ax = fig.gca(projection='3d')
+    ax.set_aspect('equal')
+
+    x1, x2 = keypoints1[:, 0], keypoints2[:, 0]
+    y1, y2 = keypoints1[:, 1], keypoints2[:, 1]
+    z1, z2 = keypoints1[:, 2], keypoints2[:, 2]
+
+    for ind1, ind2 in connection:
+        ax.plot([x1[ind1], x1[ind2]], [y1[ind1], y1[ind2]], [z1[ind1], z1[ind2]], 'b-o')
+        ax.plot([x2[ind1], x2[ind2]], [y2[ind1], y2[ind2]], [z2[ind1], z2[ind2]], 'g-o')
+
+    RADIUS = 1000
+    ax.set_xlim3d([-RADIUS, RADIUS])
+    ax.set_zlim3d([-RADIUS, RADIUS])
+    ax.set_ylim3d([-RADIUS, RADIUS])
+
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+
+    plt.show()
