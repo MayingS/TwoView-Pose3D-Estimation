@@ -106,7 +106,7 @@ def evaluate_detection(annot_file, detect_file, dataset):
     with open(detect_file, 'r') as f:
         detection = json.load(f)
 
-    gt = defaultdict(list)
+    gt = defaultdict(dict)
     for image_item, annot_item in zip(annotation['images'], annotation['annotations']):
         img_id = annot_item['image_id']
         if dataset == 'human36m':
@@ -121,10 +121,12 @@ def evaluate_detection(annot_file, detect_file, dataset):
         else:
             print('Not implemented for dataset {}'.format(dataset))
             raise NotImplementedError
-        gt[img_id].append(gt_pose2d)
+        bodyid = annot_item['id'] if dataset == 'panoptic' else 0
+        gt[img_id][bodyid] = gt_pose2d
 
     errors = []
     tps, pred_nums, gt_nums = [], [], []
+    mapping_result = {'predictions': []}
     for detect_item in detection['predictions']:
         img_id = detect_item['id']
         detect_pose2d = np.array(detect_item['pose2d'])
@@ -132,16 +134,26 @@ def evaluate_detection(annot_file, detect_file, dataset):
         detected_boxes = get_boxes(detect_pose2d)
         gt_boxes = get_boxes(gt_pose2d)
 
-        tp, pred_num, gt_num, error = match_to_eval(gt_boxes, detected_boxes, 0.5, dataset)
+        tp, pred_num, gt_num, error, pred_body_id = match_to_eval(gt_boxes, detected_boxes, 0.5, dataset)
 
         tps.append(tp)
         pred_nums.append(pred_num)
         gt_nums.append(gt_num)
         errors.append(error)
 
+        for bodyid, kpts in pred_body_id.items():
+            to_save = {'file_name': detect_item['file_name'],
+                       'id': detect_item['id'],
+                       'pose2d': kpts.tolist(),
+                       'body_id': bodyid}
+            mapping_result['predictions'].append(to_save)
+
     mean_error = sum(errors) / len(errors)
     print('Mean error: {}'.format(mean_error))
     print('TP:{}, pred_num:{}, gt_num:{}'.format(sum(tps), sum(pred_nums), sum(gt_nums)))
+
+    with open(detect_file.replace('.json', '_mapped.json'), 'w') as f:
+        json.dump(mapping_result, f)
 
 
 def args_parser():
@@ -167,13 +179,13 @@ def args_parser():
 
 if __name__ == "__main__":
     args = args_parser()
-    modelname = args['modelname']
-    annotation_file = args['annot_file']
-    dataset = args['dataset']
-    image_dir = args['img_dir']
-    save_dir = args['save_dir']
-    gpuid = args['gpu']
-    vis = args['vis']
+    modelname = args.modelname
+    annotation_file = args.annot_file
+    dataset = args.dataset
+    image_dir = args.img_dir
+    save_dir = args.save_dir
+    gpuid = args.gpu
+    vis = args.vis
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
