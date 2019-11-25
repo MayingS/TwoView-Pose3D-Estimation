@@ -56,21 +56,20 @@ def calc_IoU(boxA, boxB):
 
 def calc_error(pred, gt, dataset):
     # convert to Human3.6m 17 joints annotation format
-    if pred.shape[0] == 17:
-        pred = pred[[13, 4, 2, 0, 5, 3, 1, 14, 15, 16, 12, 11, 9, 7, 10, 8, 6], :]
-    else:
+    if pred.shape[0] == 13:
         pred_pelvis = (pred[4:5] + pred[5:6]) / 2
         pred_mid_shoulder = (pred[10:11] + pred[11:12]) / 2
-        pred_mid_back = (pred[pred_mid_shoulder + pred_pelvis]) / 2
+        pred_mid_back = (pred_mid_shoulder + pred_pelvis) / 2
         pred_neck = (pred[12:13] + pred_mid_shoulder) / 2
-        pred = np.hstack((pred, pred_pelvis, pred_mid_back, pred_mid_shoulder, pred_neck))
+        pred = np.vstack((pred, pred_pelvis, pred_mid_back, pred_mid_shoulder, pred_neck))
+    pred = pred[[13, 4, 2, 0, 5, 3, 1, 14, 15, 16, 12, 11, 9, 7, 10, 8, 6], :]
 
     if dataset == 'panoptic':
         gt_mid_back = (gt[2:3]+gt[0:1])/2
         gt_mid_shoulder = (gt[3:4]+gt[9:10])/2
         gt_head = ((gt[15:16]+gt[16:17])/2 + (gt[17:18]+gt[18:19])/2)/2
-        gt = np.hstack(gt[[2, 12, 13, 14, 6, 7, 8], :], gt_mid_back, gt_mid_shoulder,
-                       gt[0:1], gt_head, gt[[3, 4, 5, 9, 10, 11]])
+        gt = np.vstack((gt[[2, 12, 13, 14, 6, 7, 8], :], gt_mid_back, gt_mid_shoulder,
+                       gt[0:1], gt_head, gt[[3, 4, 5, 9, 10, 11], :]))
 
     vis = ((gt[:, 0] < 1920) & (gt[:, 0] >= 0)) & ((gt[:, 1] < 1080) & (gt[:, 1] >= 0))
     dist = np.abs(pred[vis, :]-gt[vis, :])

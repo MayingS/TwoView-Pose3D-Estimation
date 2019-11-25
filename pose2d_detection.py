@@ -12,7 +12,7 @@ import json
 import argparse
 from collections import defaultdict
 
-from utils import *
+from myutils import *
 from plot_utils import *
 
 '''
@@ -159,10 +159,10 @@ def evaluate_detection(annot_file, detect_file, dataset):
 def args_parser():
     parser = argparse.ArgumentParser('Detect 2d pose using LCR-Net and perform evaluation.')
     parser.add_argument('--modelname', help='The name of the LCR-Net model. Could be either '
-                                            'Human3.6-17J-ResNet50 or InTheWild-ResNet50. '
+                                            'Human3.6M-17J-ResNet50 or InTheWild-ResNet50. '
                                             'The former is 17 joints detection and the latter '
-                                            'is 14 joints detection. Default is Human3.6-17J-ResNet50',
-                        type=str, default='Human3.6-17J-ResNet50')
+                                            'is 14 joints detection. Default is Human3.6M-17J-ResNet50',
+                        type=str, default='Human3.6M-17J-ResNet50')
     parser.add_argument('--annot_file', help='The ground truth annotation file',
                         type=str, required=True)
     parser.add_argument('--dataset', help='The dataset name. Could be either human36m or panoptic. '
