@@ -127,8 +127,8 @@ def evaluate_estimation(annot_file, estimate_file, njts, dataset, debug=False):
             gt_mid_back = (gt_pose3d[2:3] + gt_pose3d[0:1]) / 2
             gt_mid_shoulder = (gt_pose3d[3:4] + gt_pose3d[9:10]) / 2
             gt_head = ((gt_pose3d[15:16] + gt_pose3d[16:17]) / 2 + (gt_pose3d[17:18] + gt_pose3d[18:19]) / 2) / 2
-            gt_pose3d = np.hstack(gt_pose3d[[2, 12, 13, 14, 6, 7, 8], :], gt_mid_back, gt_mid_shoulder,
-                                  gt_pose3d[0:1], gt_head, gt_pose3d[[3, 4, 5, 9, 10, 11]])
+            gt_pose3d = np.vstack((gt_pose3d[[2, 12, 13, 14, 6, 7, 8], :], gt_mid_back, gt_mid_shoulder,
+                                  gt_pose3d[0:1], gt_head, gt_pose3d[[3, 4, 5, 9, 10, 11]]))
         else:
             raise NotImplementedError
         gt[img_id][bodyid] = gt_pose3d
@@ -158,8 +158,8 @@ def evaluate_estimation(annot_file, estimate_file, njts, dataset, debug=False):
             aligned_v, aligned_u, error, diff, ratio = align(est_pose3d, cur_gt_pose3d)
             errors.append(error)
             diffs.append(diff)
-            # if debug:
-            #     plot_3D_keypoints_cmp(aligned_v, aligned_u)
+            if debug:
+                plot_3D_keypoints_cmp(aligned_v, aligned_u)
 
     #     estimation['estimations'][i]['pose3d'] = (estimate_pose3d * ratio).tolist()
     #

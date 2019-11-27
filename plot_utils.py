@@ -1,8 +1,9 @@
 import os
 
+import matplotlib
 import matplotlib.pylab as plt
+matplotlib.use('Agg')
 from mpl_toolkits.mplot3d import Axes3D
-plt.ion()
 
 
 def display_2d_poses(image, detections, njts, imagename, savedir):
