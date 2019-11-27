@@ -14,3 +14,15 @@ Other packages required include:
 * pickle
 * opencv
 * matplotlib
+
+## Dataset
+
+In this work, we mainly use [Human3.6M](http://vision.imar.ro/human3.6m/description.php) and [CMU panoptic](http://domedb.perception.cs.cmu.edu/index.html) dataset for the experiments. 
+
+1. Human3.6M
+
+   Refer to [h36m-fetch](https://github.com/anibali/h36m-fetch) repo for easy data downloading, frame extracting and data processing.
+
+2. CMU panoptic
+
+   Refer to [PanopticStudio Toolbox](https://github.com/CMU-Perceptual-Computing-Lab/panoptic-toolbox) for data structure explaination and use the toolbox to process the data.
