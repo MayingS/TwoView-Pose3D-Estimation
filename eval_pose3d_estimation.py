@@ -20,9 +20,9 @@ connection = [[0, 1], [1, 2], [2, 3], [0, 4], [4, 5], [5, 6], [0, 7], [7, 8], [8
 def args_parser():
     parser = argparse.ArgumentParser('Evaluate the 3d pose estimation')
     parser.add_argument('--annot_file', help='The ground truth annotation file',
-                        type=str, default='./data/Human36m/annotations/Human36M_subject1.json')
+                        type=str, required=True)
     parser.add_argument('--estimate_file', help='The pose3d estimation result file',
-                        type=str, default='./Human36m_pose3d_estimation/Human36M_subject1.json')
+                        type=str, required=True)
     parser.add_argument('--njts', help='The number of joints in the estimated pose3d results. Default is 17.',
                         type=int, default=17)
     parser.add_argument('--dataset', help='The dataset name. Could be either human36m or panoptic. '
