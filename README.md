@@ -21,11 +21,23 @@ In this work, we mainly use [Human3.6M](http://vision.imar.ro/human3.6m/descript
 
 1. Human3.6M
 
-   Refer to [h36m-fetch](https://github.com/anibali/h36m-fetch) repo for easy data downloading, frame extracting and data processing.
+   Refer to [h36m-fetch](https://github.com/anibali/h36m-fetch) repo for easy data downloading, frame extracting and data processing. The parsed data can be downloaded via [images](https://cv.snu.ac.kr/dataset/3DMPPE/Human36M/images.zip), [annotations](https://cv.snu.ac.kr/dataset/3DMPPE/Human36M/annotations.zip)
 
 2. CMU panoptic
 
-   Refer to [PanopticStudio Toolbox](https://github.com/CMU-Perceptual-Computing-Lab/panoptic-toolbox) for data structure explaination and use the toolbox to process the data.
+   Refer to [PanopticStudio Toolbox](https://github.com/CMU-Perceptual-Computing-Lab/panoptic-toolbox) for data structure explaination and use the toolbox to process the data. The data need to reorgnized into the same format as Human3.6M annotations.
+   
+Make a soft link to make the data structure looks as below.
+```
+${REPO_ROOT}
+|-- dataset
+|-- |-- Human36M
+|   `-- |-- images
+|       `-- annotations
+|-- |-- panoptic
+|   `-- |-- images
+|       `-- annotations
+```
    
 ## 2D Pose Detection and Evaluation
 
@@ -75,7 +87,7 @@ python pose3d_estimation.py --pose2d-file output/Human36M_subject1_mapped.json -
 ```
 For CMU Panoptic dataset, we use camera16 and camera10 to perform the estimation. The detected 2d pose results of the person are saved in two seperate files. The 3d pose can be estimated using the following command.
 ```
-python pose3d_estimation.py --pose2d-file output/160906_pizza1_00_16_mapped.json output/160906_pizza1_00_10_mapped.json --image-root dataset/Human36M/images/ --outdir 3d_output --K-file cameras/panoptic_cam.json --dataset panoptic
+python pose3d_estimation.py --pose2d-file output/160906_pizza1_00_16_mapped.json output/160906_pizza1_00_10_mapped.json --image-root dataset/panoptic/images/ --outdir 3d_output --K-file cameras/panoptic_cam.json --dataset panoptic
 ```
 
 **Output files**
