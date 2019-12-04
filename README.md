@@ -102,3 +102,11 @@ The projection matrices of the two cameras calculated during the process would a
 With the estimated projection matrices, we can feed the projection matrices into the args for later estimation under the same cameras, so that we do not need to estimate the projection again. This can be achieved by args `--proj-file`.
 
 ## 3D Pose Evaluation
+
+To evaluate the 3D estimation result, run the following command
+```
+python eval_pose3d_estimation.py --annot_file dataset/Human36M/annotations/Human36M_subject1.json --estimate_file 3d_output/Human36M_subject1_mapped.json
+```
+Use `--dataset panoptic` for CMU panoptic dataset.
+
+Use `--njts 14` if the number of joints is 14 when using the `InTheWild-ResNet50` model in LCR-Net detection.
