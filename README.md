@@ -55,10 +55,10 @@ For an input annotation file, the script would extract out all the images and pe
 
 * `output/[ANNO].json`, the structure of the json is as below:
 ```
-{'predictions': [{'file_name': %image file name,
-                  'id': %image id,
-                  'pose2d': %list of 2d poses detected in this image,
-                  'scores': %list of detected 2d poses scores
+{'predictions': [{'file_name': %string, image file name,
+                  'id': %int, image id,
+                  'pose2d': %list, each item is a detected 2d pose in this image. The 2d pose is organized in a matrix with size njts*2.
+                  'scores': %list of int, each item is the score of the corresponding detected 2d pose.
                   }, 
                   ...
                  ]
@@ -67,10 +67,10 @@ For an input annotation file, the script would extract out all the images and pe
 
 * `output/[ANNO]_mapped.json`, the structure of the json is as below:
 ```
-{'predictions': [{'file_name': %image file name,
-                  'id': %image id,
-                  'pose2d': %one detected 2d pose that is matched to a gt pose,
-                  'body_id': %the body id of the mathced gt pose
+{'predictions': [{'file_name': %string, image file name,
+                  'id': %int, image id,
+                  'pose2d': %njts*2 matrix, one detected 2d pose that is matched to a gt pose,
+                  'body_id': %int, the body id of the mathced gt pose
                   }, 
                   ...
                  ]
@@ -109,10 +109,10 @@ With the input 2d pose file(s), the estimated 3d pose will be saved in to the ou
 
 The structure of the estimated 3D pose file is as below:
 ```
-{'estimations': [{'file_name': %image file name,
-                  'id': %image id,
-                  'pose3d': %concatenated 3D keypoints of persons in this image,
-                  'body_ids': %list of body id
+{'estimations': [{'file_name': %string, image file name,
+                  'id': %int, image id,
+                  'pose3d': %a 2d matrix, concatenated 3D keypoints of persons in this image. There are njtss*#person rows and 3 columns in this matrix. For first person, the pose can be extracted from the first njtss rows; the second person, can be extracted from the second njts rows..
+                  'body_ids': %list of int, each item is a body id
                   }, 
                   ...
                  ]
