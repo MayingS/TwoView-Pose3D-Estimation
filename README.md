@@ -77,6 +77,19 @@ For an input annotation file, the script would extract out all the images and pe
 }
 ```
 
+**Demo**
+
+You can perform 2d pose detection on just one single image for demo. Simply run
+```
+python demo2d.py --img demo/cam02.jpg
+```
+
+The input image and the 2d pose detection result visualization are shown as below
+
+Input Image             |  2D Pose Detection
+:-------------------------:|:-------------------------:
+<img src="https://github.com/MayingS/TwoView-Pose3D-Estimation/blob/master/demo/cam02.jpg" width="300"/>  |  <img src="https://github.com/MayingS/TwoView-Pose3D-Estimation/blob/master/demo/cam02_pose2d.jpg" width="300"/>
+
 ## 3D Pose Estimation
 
 The 3d pose is estimated from two-view of 2d poses. 
