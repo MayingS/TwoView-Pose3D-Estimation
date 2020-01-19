@@ -135,3 +135,13 @@ python eval_pose3d_estimation.py --annot_file dataset/Human36M/annotations/Human
 Use `--dataset panoptic` for CMU panoptic dataset.
 
 Use `--njts 14` if the number of joints is 14 when using the `InTheWild-ResNet50` model in LCR-Net detection.
+
+## Example
+
+Below is an example of the 3d keypoints estimation from two views of cameras.
+
+Two views of images             |  3D Pose Estimation
+:-------------------------:|:-------------------------:
+<img src="https://github.com/MayingS/TwoView-Pose3D-Estimation/blob/master/demo/cam02.jpg" width="250"/> <img src="https://github.com/MayingS/TwoView-Pose3D-Estimation/blob/master/demo/cam04.jpg" width="250"/>   |  <img src="https://github.com/MayingS/TwoView-Pose3D-Estimation/blob/master/demo/pose3d.gif" width="300"/>
+
+The blue skeleton is the groundtruth and the green one is the estimation result.
